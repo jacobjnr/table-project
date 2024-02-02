@@ -102,6 +102,17 @@
                   const id = document.getElementById('id').value;
                   const fullName = document.getElementById('full-name').value;
                   const phoneNumber = document.getElementById('phone-number').value;
+
+                  const tableBody = document.querySelector('table tbody');
+                  const existingId = Array.from(tableBody.querySelectorAll('tr td:first-child'))
+                                    .some(cell => cell.textContent === id);
+
+                  if (existingId) {
+                      console.error('An entry with this ID already exists.');
+                      alert('An entry with this ID already exists.'); // Notify the user
+                      submitButton.disabled = false; // Re-enable the submit button
+                      return; // Stop the function here
+                  }
         
                   axios.post('/data', {
                       id: id,
