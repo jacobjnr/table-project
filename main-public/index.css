@@ -1,0 +1,78 @@
+body{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 20px;
+    align-items: flex-start;
+}
+
+.striped {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px; /* Spacing above the table */
+  }
+  
+  /* Header styling */
+  .striped thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+  }
+  
+  /* Striped effect for tbody rows */
+  .striped tbody tr:nth-child(odd) {
+    background-color: #f3f3f3;
+  }
+  
+  /* Text alignment for all cells */
+  .striped th,
+  .striped td {
+    padding: 12px 15px;
+    text-align: left; /* Left align text in the cells */
+    border-bottom: 1px solid #dddddd;
+  }
+  
+  /* Hover effect for rows */
+  .striped tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  
+.infoForm {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+    margin-top: 100px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="tel"] {
+    width: calc(100% - 22px); /* Adjust width to account for padding and border */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.form-group button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #5cb85c;
+    color: white;
+    cursor: pointer;
+}
+
+.form-group button:hover {
+    background-color: #4cae4c;
+}

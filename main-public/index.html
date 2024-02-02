@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width-device-width, initial-scale=1.0">
+        <title>Interactive Table</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+        <link rel="stylesheet" href="index.css">      
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    </head>
+    <body>
+      <table class="striped">
+          <thead>
+            <tr>
+                <th>ID</th>
+                <th>Full-Name</th>
+                <th>Phone-Number</th>
+            </tr>
+          </thead>
+  
+          <tbody>
+            <!--<tr>
+              <td>001</td>
+              <td>olorunleke otegbeye</td>
+              <td>08130359477</td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td>adeleke otegbeye</td>
+              <td>08145160030</td>
+            </tr>
+            <tr>
+              <td>003</td>
+              <td>oluwatomisin ighodaro</td>
+              <td>4078648002</td>
+            </tr>-->
+          </tbody>
+      </table>
+
+      
+      <form id="infoForm" class="infoForm">
+          <div class="form-group">
+              <label for="id">ID:</label>
+              <input type="text" id="id" name="id" required>
+          </div>
+          <div class="form-group">
+              <label for="full-name">Full Name:</label>
+              <input type="text" id="full-name" name="full-name" required>
+          </div>
+          <div class="form-group">
+              <label for="phone-number">Phone Number:</label>
+              <input type="tel" id="phone-number" name="phone-number" required>
+          </div>
+          <div class="form-group">
+              <button type="submit" id="submitButton">POST</button>
+          </div>
+      </form>
+
+      <form id="updateForm" class="infoForm">
+          <div class="form-group">
+              <label for="id">ID:</label>
+              <input type="text" id="update-id" name="update-id" required>
+          </div>
+          <div class="form-group">
+              <label for="full-name">Full Name:</label>
+              <input type="text" id="update-full-name" name="update-full-name">
+          </div>
+          <div class="form-group">
+              <label for="phone-number">Phone Number:</label>
+              <input type="tel" id="update-phone-number" name="update-phone-number">
+          </div>
+          <div class="form-group">
+              <button type="submit" id="updateButton">UPDATE</button>
+          </div>
+      </form>
+
+      <form id="deleteForm" class="infoForm">
+        <div class="form-group">
+            <label for="id">ID:</label>
+            <input type="text" id="delete-id" name="delete-id" required>
+        </div>
+        <div class="form-group">
+            <button type="submit" id="deleteButton">DELETE</button>
+        </div>
+    </form>
+
+      
+
+        <!--POST(UPDATE TABLE) FORM SCRIPT-->
+        <script>
+          console.log("Script Loaded!");
+          document.addEventListener('DOMContentLoaded', function() {
+              const infoForm = document.getElementById('infoForm');
+              const submitButton = document.getElementById('submitButton');
+        
+              infoForm.addEventListener('submit', function(event) { // Removed async as it's not needed here
+                  console.log('Form submit event triggered');
+                  event.preventDefault();
+                  submitButton.disabled = true; // Disable the submit button to prevent multiple submits
+        
+                  const id = document.getElementById('id').value;
+                  const fullName = document.getElementById('full-name').value;
+                  const phoneNumber = document.getElementById('phone-number').value;
+        
+                  axios.post('/data', {
+                      id: id,
+                      fullName: fullName,
+                      phoneNumber: phoneNumber
+                  })
+                  .then(function (response) {
+                      console.log('Data added:', response.data);
+                      
+                      // Update the table on the page
+                      const tableBody = document.querySelector('table tbody');
+                      const row = document.createElement('tr');
+                      const idCell = document.createElement('td');
+                      const nameCell = document.createElement('td');
+                      const phoneCell = document.createElement('td');
+              
+                      idCell.textContent = id;
+                      nameCell.textContent = fullName;
+                      phoneCell.textContent = phoneNumber;
+              
+                      row.appendChild(idCell);
+                      row.appendChild(nameCell);
+                      row.appendChild(phoneCell);
+              
+                      tableBody.appendChild(row);
+                  })
+                  .catch(function (error) {
+                      console.error('Failed to add new info', error);
+                  })
+                  .then(function () {
+                      // always executed
+                      submitButton.disabled = false; // Re-enable the submit button
+                      infoForm.reset(); // Reset the form fields
+                  });
+              });
+          });
+        </script>
+        
+
+        <!--UPDATE(PUT) SCRIPT-->
+        <script>
+          console.log("Script Loaded!");
+          document.addEventListener('DOMContentLoaded', function() {
+             const updateForm = document.getElementById('updateForm');
+             const updateButton = document.getElementById('updateButton');
+
+              updateForm.addEventListener('submit', async function(event) {
+                  console.log("Form event triggered");
+                  event.preventDefault();
+                  const id = document.getElementById('update-id').value;
+                  const updatefullName = document.getElementById('update-full-name').value;
+                  const updatephoneNumber = document.getElementById('update-phone-number').value;
+
+                  const updates = {};
+                  if (updatefullName.trim() !== '') {
+                      updates.fullName = updatefullName;
+                  }
+                  if (updatephoneNumber.trim() !== '') {
+                      updates.phoneNumber = updatephoneNumber;
+                  }
+
+                  axios.put(`/data/${id}`, updates)
+                  .then(function(response) {
+                      console.log('Data Updated:', response.data);
+                      const tableBody = document.querySelector('table tbody');
+                      const rows = tableBody.querySelectorAll('tr');
+                      rows.forEach(row => {
+                          const cell = row.querySelector('td:first-child');
+                          if(cell.textContent === id) {
+                              if (updates.fullName) {
+                                  const nameCell = cell.nextElementSibling;
+                                  nameCell.textContent = updates.fullName;
+                              }
+                              if (updates.phoneNumber) {
+                                  const phoneCell = row.querySelector('td:last-child');
+                                  phoneCell.textContent = updates.phoneNumber;
+                              }
+                          }
+                      });
+                  })
+                  .catch(function (error) {
+                      console.log('Failed to update info', error);
+                  })
+                  .then(function () {
+                      // always executed
+                      updateButton.disabled = false;
+                      updateForm.reset();
+                  });
+              });
+          });
+        </script>
+
+         <!--DELETE FORM-->
+         <script>
+          console.log("Script Loaded!");
+          document.addEventListener('DOMContentLoaded', function() {
+             const deleteForm = document.getElementById('deleteForm');
+             const deleteButton = document.getElementById('deleteButton');
+        
+              deleteForm.addEventListener('submit', async function(event) {
+                  console.log("Form event triggered");
+                  event.preventDefault();
+                  const deleteId = document.getElementById('delete-id').value;
+                  // Removed unused variables deleteFullName and deletePhoneNumber as they're not needed for a DELETE request
+        
+                  deleteButton.disabled = true; // Disable the button to prevent multiple submits
+        
+                  axios.delete(`/data/${deleteId}`) // Ensure 'deleteId' is used, not 'Id'
+                    .then(function(response) {
+                        console.log('Data deleted!:', response.data);
+                        const tableBody = document.querySelector('table tbody');
+                        const rows = tableBody.querySelectorAll('tr');
+                        rows.forEach(row => {
+                          const cell = row.querySelector('td:first-child');
+                          if(cell.textContent === deleteId) { // Ensure 'deleteId' is used, not 'Id'
+                            row.remove();
+                          }
+                        });
+                    })
+                    .catch(function (error) {
+                        console.log('Failed to delete info', error);
+                    })
+                    .then(function () {
+                        // always executed
+                        deleteButton.disabled = false; // Re-enable the button
+                        deleteForm.reset(); // Reset the form fields
+                    });
+              });
+          });
+        </script>
+        
+        
+  </body>
+</html>
