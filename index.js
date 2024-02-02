@@ -3,6 +3,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static('./main-public'));
 
+const PORT = process.env.PORT || 3000;
 const dataStore = [];
 
 app.post('/data', (req, res) => {
@@ -55,6 +56,6 @@ app.delete('/data/:id', (req, res) => {
     }
 });
 
-app.listen(8000, () => {
-    console.log('Server is listening on port 8000....')
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
